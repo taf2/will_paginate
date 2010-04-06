@@ -79,7 +79,10 @@ module WillPaginate
           
           args << find_options
           # @options_from_last_find = nil
-          pager.replace(send(finder, *args) { |*a| yield(*a) if block_given? })
+
+          # XXX: disable the block yield calls
+          records = send(finder, *args)# { |*a| yield(*a) if block_given? }
+          pager.replace(records)
           
           # magic counting for user convenience:
           pager.total_entries = wp_count(count_options, args, finder) unless pager.total_entries
