@@ -170,16 +170,16 @@ module WillPaginate
       
       if collection.total_pages < 2
         case collection.size
-        when 0; "No #{entry_name.pluralize} found"
-        when 1; "Displaying <b>1</b> #{entry_name}"
-        else;   "Displaying <b>all #{collection.size}</b> #{entry_name.pluralize}"
+        when 0; "No #{entry_name.pluralize} found".html_safe
+        when 1; "Displaying <b>1</b> #{entry_name}".html_safe
+        else;   "Displaying <b>all #{collection.size}</b> #{entry_name.pluralize}".html_safe
         end
       else
-        %{Displaying #{entry_name.pluralize} <b>%d&nbsp;-&nbsp;%d</b> of <b>%d</b> in total} % [
+        (%{Displaying #{entry_name.pluralize} <b>%d&nbsp;-&nbsp;%d</b> of <b>%d</b> in total} % [
           collection.offset + 1,
           collection.offset + collection.length,
           collection.total_entries
-        ]
+        ]).html_safe
       end
     end
     
@@ -237,7 +237,7 @@ module WillPaginate
       links.unshift page_link_or_span(@collection.previous_page, 'disabled prev_page', @options[:previous_label])
       links.push    page_link_or_span(@collection.next_page,     'disabled next_page', @options[:next_label])
       
-      html = links.join(@options[:separator])
+      html = links.join(@options[:separator]).html_safe
       @options[:container] ? @template.content_tag(:div, html, html_attributes) : html
     end
 
@@ -307,11 +307,11 @@ module WillPaginate
     end
 
     def page_link(page, text, attributes = {})
-      @template.link_to text, url_for(page), attributes
+      @template.link_to text.html_safe, url_for(page), attributes
     end
 
     def page_span(page, text, attributes = {})
-      @template.content_tag :span, text, attributes
+      @template.content_tag :span, text.html_safe, attributes
     end
 
     # Returns URL params for +page_link_or_span+, taking the current GET params
